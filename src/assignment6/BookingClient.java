@@ -9,16 +9,26 @@
 
 package assignment6;
 
+import java.lang.reflect.Array;
 import java.util.*;
 import java.lang.Thread;
 
 public class BookingClient {
+    ArrayList<Office> officeList;
+
   /*
    * @param office maps box office id to number of customers in line
    * @param theater the theater where the show is playing
    */
   public BookingClient(Map<String, Integer> office, Theater theater) {
     // TODO: Implement this constructor
+      officeList = new ArrayList<>();
+      ArrayList<String> officeNameList = new ArrayList<>(office.keySet());
+
+      for(String name : officeNameList){
+          officeList.add(new Office(office.get(name), name));
+      }
+      Office.setTheater(theater);
   }
 
   /*
@@ -30,7 +40,14 @@ public class BookingClient {
    */
 	public List<Thread> simulate() {
 		//TODO: Implement this method
+        ArrayList<Thread> threadList = new ArrayList<>();
 
-        return null;
+
+        return threadList;
 	}
+
+	public static void main(String[] args){
+	    Theater show = new Theater(100, 100, "Tamako");
+	    System.out.println("Sorry, we are sold out!");
+    }
 }
