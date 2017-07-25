@@ -42,12 +42,27 @@ public class BookingClient {
 		//TODO: Implement this method
         ArrayList<Thread> threadList = new ArrayList<>();
 
+        for(Runnable office : officeList){
+            Thread thread = new Thread(office);
+            threadList.add(thread);
+            thread.start();
+        }
 
         return threadList;
 	}
 
 	public static void main(String[] args){
-	    Theater show = new Theater(100, 100, "Tamako");
+	    Theater show = new Theater(3, 5, "Tamako");
+	    Map<String, Integer> officeMap = new HashMap<String, Integer>();
+
+	    officeMap.put("BX1", 5);
+        officeMap.put("BX2", 5);
+        officeMap.put("BX3", 5);
+
+	    BookingClient mainShow = new BookingClient(officeMap, show);
+
+	    mainShow.simulate();
+
 	    System.out.println("Sorry, we are sold out!");
     }
 }

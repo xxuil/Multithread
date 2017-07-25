@@ -5,7 +5,7 @@ package assignment6;
  * Created by Liuxx on 2017/7/24.
  */
 
-public class Seat {
+public class Seat implements Comparable<Seat> {
     /*
      * Represents a seat in the theater
      * A1, A2, A3, ... B1, B2, B3 ...
@@ -35,6 +35,24 @@ public class Seat {
 
     public boolean getStatus(){
         return this.reserved;
+    }
+
+    public int compareTo(Seat that){
+        if(this.rowNum < that.getRowNum())
+            return -1;
+
+        if(this.rowNum > that.getRowNum())
+            return 1;
+
+        else {
+            if (this.seatNum < that.getSeatNum())
+                return -1;
+
+            if (this.seatNum > that.getSeatNum())
+                return 1;
+
+            else return 0;
+        }
     }
 
     @Override

@@ -41,8 +41,10 @@ public class Theater {
 	public Seat bestAvailableSeat() {
 	    //Find the first available seat on the list and return
 	    for(Seat seat : seatList){
-	        return seat;
+	        if(!seat.getStatus())
+	            return seat;
         }
+        //return null if there is no more available seat
         return null;
 	}
 

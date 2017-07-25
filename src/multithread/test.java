@@ -56,7 +56,7 @@ public class test implements Runnable{
             e.printStackTrace();
         }
 
-        System.out.println(Thread.currentThread().getName() + " ends\n\n\n\n\n\n\n\n");
+        System.out.println(Thread.currentThread().getName() + " ends\n");
     }
 
 

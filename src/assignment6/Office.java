@@ -8,11 +8,13 @@ public class Office implements Runnable {
     private int clients;
     private String name;
     private static Theater show;
+    private static int totalNum = 0;
 
     public Office(int clients, String name){
         this.clients = clients;
         this.name = name;
         show = null;
+        totalNum += 1;
     }
 
     public int getClients(){
@@ -22,6 +24,8 @@ public class Office implements Runnable {
     public String getName(){
         return this.name;
     }
+
+    public int getTotalNum(){return totalNum;}
 
     public static void setTheater(Theater theater){
         show = theater;
