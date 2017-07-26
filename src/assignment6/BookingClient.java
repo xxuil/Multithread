@@ -15,6 +15,7 @@ import java.lang.Thread;
 
 public class BookingClient {
     ArrayList<Office> officeList;
+    public static boolean DEBUG = true;
 
   /*
    * @param office maps box office id to number of customers in line
@@ -28,6 +29,8 @@ public class BookingClient {
       for(String name : officeNameList){
           officeList.add(new Office(office.get(name), name));
       }
+      Office.setDEBUG(DEBUG);
+      Office.buildLine();
       Office.setTheater(theater);
   }
 
@@ -45,13 +48,26 @@ public class BookingClient {
         for(Runnable office : officeList){
             Thread thread = new Thread(office);
             threadList.add(thread);
+        }
+
+        for(Thread thread : threadList){
             thread.start();
+            try {
+            } catch(Exception e){
+                e.printStackTrace();
+            }
         }
 
         return threadList;
 	}
 
-	public static void main(String[] args){
+    private static void joinAllThreads(List<Thread> threads) throws InterruptedException {
+        for (Thread t: threads) {
+            t.join();
+        }
+    }
+
+	public static void main(String[] args) throws InterruptedException{
 	    Theater show = new Theater(3, 5, "Tamako");
 	    Map<String, Integer> officeMap = new HashMap<String, Integer>();
 
@@ -61,8 +77,9 @@ public class BookingClient {
 
 	    BookingClient mainShow = new BookingClient(officeMap, show);
 
-	    mainShow.simulate();
+	    joinAllThreads(mainShow.simulate());
 
+	    while(!show.getStatus()){}
 	    System.out.println("Sorry, we are sold out!");
     }
 }

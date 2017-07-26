@@ -70,6 +70,6 @@ public class Seat implements Comparable<Seat> {
             index -= 26;
         }
 
-        return row + Integer.toString(seatNum);
+        return row;
     }
 }

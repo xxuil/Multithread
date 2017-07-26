@@ -16,6 +16,7 @@ public class Theater {
     private ArrayList<Seat> seatList;
     private ArrayList<Ticket> soldList;
     private String show;
+    private static boolean isFull = false;
 
 
 	public Theater(int numRows, int seatsPerRow, String show) {
@@ -38,7 +39,7 @@ public class Theater {
 	 *
  	 * @return the best seat or null if theater is full
    */
-	public Seat bestAvailableSeat() {
+	public synchronized Seat bestAvailableSeat() {
 	    //Find the first available seat on the list and return
 	    for(Seat seat : seatList){
 	        if(!seat.getStatus())
@@ -65,6 +66,11 @@ public class Theater {
         Ticket ticket = new Ticket(this.show, boxOfficeId, seat, client);
         System.out.println(ticket);
         soldList.add(ticket);
+        seat.reserve();
+
+        if(soldList.size() == seatList.size())
+            isFull = true;
+
         return ticket;
 	}
 
@@ -76,4 +82,8 @@ public class Theater {
 	public List<Ticket> getTransactionLog(){
 	    return soldList;
 	}
+
+	public boolean getStatus(){
+	    return isFull;
+    }
 }

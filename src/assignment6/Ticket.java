@@ -47,29 +47,7 @@ public class Ticket {
                 ret = ret + "|";
 
             else if(i == 2) {
-                ret = ret + "Show:";
-                i += 5;
-                continue;
-            }
-
-            else if(i == 8) {
-                ret = ret + show;
-                i += show.length();
-                continue;
-            }
-            else if(i == 30){
-                ret = ret + "|";
-            }
-            else
-                ret = ret + " ";
-        }
-
-        for(int i = 0; i < 31; i++){
-            if(i == 0)
-                ret = ret + "|";
-
-            else if(i == 2) {
-                ret = ret + "Show:";
+                ret = ret + "Show: ";
                 i += 5;
                 continue;
             }
@@ -88,14 +66,16 @@ public class Ticket {
 
         ret = ret + "\n";
 
+
+        int j = 0;
         for(int i = 0; i < 31; i++){
-            int j = 0;
+
             if(i == 0)
                 ret = ret + "|";
 
             else if(i == 2) {
-                ret = ret + "Box Office ID:";
-                i += "Box Office ID:".length();
+                ret = ret + "Box Office ID: ";
+                i += "Box Office ID: ".length();
                 j = i + 1;
                 continue;
             }
@@ -106,7 +86,7 @@ public class Ticket {
                 continue;
             }
             else if(i == 30){
-                ret = ret + "|";
+                ret = ret + " |";
             }
             else
                 ret = ret + " ";
@@ -114,14 +94,14 @@ public class Ticket {
 
         ret = ret + "\n";
 
+        j = 0;
         for(int i = 0; i < 31; i++){
-            int j = 0;
             if(i == 0)
                 ret = ret + "|";
 
             else if(i == 2) {
-                ret = ret + "Seat:";
-                i += "Seat:".length();
+                ret = ret + "Seat: ";
+                i += "Seat: ".length();
                 j = i + 1;
                 continue;
             }
@@ -132,20 +112,22 @@ public class Ticket {
                 continue;
             }
             else if(i == 30){
-                ret = ret + "|";
+                ret = ret + " |";
             }
             else
                 ret = ret + " ";
         }
 
+        ret = ret + "\n";
+
+        j = 0;
         for(int i = 0; i < 31; i++){
-            int j = 0;
             if(i == 0)
                 ret = ret + "|";
 
             else if(i == 2) {
-                ret = ret + "Client:";
-                i += "Client:".length();
+                ret = ret + "Client: ";
+                i += "Client: ".length();
                 j = i + 1;
                 continue;
             }
@@ -156,12 +138,17 @@ public class Ticket {
                 continue;
             }
             else if(i == 30){
-                ret = ret + "|";
+                ret = ret + " |";
             }
             else
                 ret = ret + " ";
         }
 
+        ret = ret + "\n";
+
+        for(int i = 0; i < 31; i++){
+            ret = ret + "-";
+        }
 
         return ret;
     }
