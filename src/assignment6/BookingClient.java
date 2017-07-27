@@ -23,7 +23,7 @@ public class BookingClient {
      * @param theater the theater where the show is playing
      */
     public BookingClient(Map<String, Integer> office, Theater theater) {
-        // TODO: Implement this constructor
+        Office.reset();
         officeList = new ArrayList<>();
         officeNameList = new ArrayList<>(office.keySet());
 
@@ -32,7 +32,6 @@ public class BookingClient {
         }
 
         Office.setDEBUG(DEBUG);
-        Office.buildLine();
         Office.setTheater(theater);
     }
 
@@ -44,21 +43,11 @@ public class BookingClient {
      *         should have as many threads as there are box offices
      */
     public List<Thread> simulate() {
-        //TODO: Implement this method
         ArrayList<Thread> threadList = new ArrayList<>();
 
-        for(Runnable office : officeList){
-            Thread thread = new Thread(office);
-            threadList.add(thread);
-        }
-
-        for(Thread thread : threadList){
-            thread.start();
-
-            try {
-            } catch(Exception e){
-                e.printStackTrace();
-            }
+        for(Thread office : officeList){
+            threadList.add(office);
+            office.start();
         }
 
         return threadList;
@@ -79,7 +68,17 @@ public class BookingClient {
         officeMap.put("BX3", 2);
 
         BookingClient mainShow = new BookingClient(officeMap, show);
-
         joinAllThreads(mainShow.simulate());
+
+        Map<String, Integer> offices = new HashMap<String, Integer>() {{
+            put("BX1", 15);
+            put("BX2", 15);
+        }};
+
+        Theater t = new Theater(50, 1, "Test 2");
+        BookingClient bc = new BookingClient(offices, t);
+        joinAllThreads(bc.simulate());
+
+        Theater.Seat best = t.bestAvailableSeat();
     }
 }

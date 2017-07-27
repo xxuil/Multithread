@@ -21,17 +21,14 @@ public class Office extends Thread {
     private Condition officeCondition;
 
     private static boolean DEBUG;
-    private static int totalTicket = 0;
-    private static int totalClients = 0;
-    private static Deque<Integer> line = new ArrayDeque<>();
+    private static Integer totalTicket = 0;
+    private static Integer totalClients = 0;
 
     public Office(int clients, String name){
         this.clients = clients;
         this.name = name;
         show = null;
         totalNum += 1;
-        lock = new ReentrantLock();
-        officeCondition = lock.newCondition();
         totalClients += clients;
 
         if(DEBUG){
@@ -39,93 +36,44 @@ public class Office extends Thread {
         }
     }
 
-    public int getClients(){
-        return this.clients;
-    }
-
-    public int getTotalNum(){return totalNum;}
-
     public static void setTheater(Theater theater){
         show = theater;
     }
 
-    public static Theater getTheater(){
-        return show;
-    }
-
     public static void setDEBUG(boolean debug){ DEBUG = debug;}
-
-    public static void buildLine(){
-        for(int i = 1; i <= totalClients; i++){
-            line.push(i);
-        }
-    }
-
-    private void processTicket(){
-        try{
-            lock.lock();
-            Theater.Seat next = show.bestAvailableSeat();
-
-            if(next == null)
-                return;
-
-            //Client Number is temporary
-            show.printTicket(name, next, line.pop());
-
-            try {
-                this.sleep(50);
-            }
-            catch(Exception e){
-                e.printStackTrace();
-            }
-
-            if(DEBUG){
-                totalTicket ++;
-                System.out.println(totalTicket);
-                System.out.println(name + " " + clients);
-            }
-        }
-        finally{
-            lock.unlock();
-        }
-    }
 
     private static boolean soldOutMessagePrinted = false;
 
-    private void printSoldOut(){
-        try {
-            lock.lock();
-            if (!soldOutMessagePrinted) {
-                soldOutMessagePrinted = true;
-                System.out.println("Sorry, we are sold out!");
-            }
-        }
-        finally {
-            lock.unlock();
-        }
-
-    }
-
     public static void reset(){
-        soldOutMessagePrinted = true;
+        soldOutMessagePrinted = false;
         show = null;
         totalNum = 0;
         totalTicket = 0;
         totalClients = 0;
-        line = new ArrayDeque<>();
     }
 
     public void run(){
-        while(true) {
-            synchronized (show) {
-                if (!show.getStatus()) {
-                    if (clients > 0) {
-                        processTicket();
-                        clients -= 1;
-                    } else break;
-                } else {
-                    printSoldOut();
-                    break;
+        while(clients > 0) {
+            synchronized(show){
+                Theater.Seat next = show.bestAvailableSeat();
+
+                if(next != null){
+                    show.printTicket(name, next, totalClients);
+                    clients --;
+                    totalClients --;
+                }
+
+                try {
+                    Thread.sleep(50);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                if(next == null){
+                    if (!soldOutMessagePrinted) {
+                        soldOutMessagePrinted = true;
+                        System.out.println("Sorry, we are sold out!");
+                    }
                 }
             }
         }
