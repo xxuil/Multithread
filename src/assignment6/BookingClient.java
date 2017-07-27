@@ -15,6 +15,7 @@ import java.lang.Thread;
 
 public class BookingClient {
     ArrayList<Office> officeList;
+    ArrayList<String> officeNameList;
     public static boolean DEBUG = false;
 
     /*
@@ -24,8 +25,7 @@ public class BookingClient {
     public BookingClient(Map<String, Integer> office, Theater theater) {
         // TODO: Implement this constructor
         officeList = new ArrayList<>();
-
-        ArrayList<String> officeNameList = new ArrayList<>(office.keySet());
+        officeNameList = new ArrayList<>(office.keySet());
 
         for(String name : officeNameList){
             officeList.add(new Office(office.get(name), name));
@@ -71,18 +71,15 @@ public class BookingClient {
     }
 
     public static void main(String[] args) throws InterruptedException{
-        Theater show = new Theater(30, 2, "Tamako");
+        Theater show = new Theater(3, 2, "Tamako Market");
         Map<String, Integer> officeMap = new HashMap<String, Integer>();
 
-        officeMap.put("BX1", 30);
-        officeMap.put("BX2", 30);
-        officeMap.put("BX3", 30);
+        officeMap.put("BX1", 2);
+        officeMap.put("BX2", 2);
+        officeMap.put("BX3", 2);
 
         BookingClient mainShow = new BookingClient(officeMap, show);
 
         joinAllThreads(mainShow.simulate());
-        //mainShow.simulate();
-
-        //System.out.println("Sorry, we are sold out!");
     }
 }

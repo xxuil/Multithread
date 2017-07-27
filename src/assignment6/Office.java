@@ -12,7 +12,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * Office Class
  * Created by liuxx on 2017/7/24.
  */
-public class Office implements Runnable {
+public class Office extends Thread {
     private int clients;
     private String name;
     private static Theater show;
@@ -43,10 +43,6 @@ public class Office implements Runnable {
         return this.clients;
     }
 
-    public String getName(){
-        return this.name;
-    }
-
     public int getTotalNum(){return totalNum;}
 
     public static void setTheater(Theater theater){
@@ -68,7 +64,7 @@ public class Office implements Runnable {
     private void processTicket(){
         try{
             lock.lock();
-            Seat next = show.bestAvailableSeat();
+            Theater.Seat next = show.bestAvailableSeat();
 
             if(next == null)
                 return;
@@ -77,7 +73,7 @@ public class Office implements Runnable {
             show.printTicket(name, next, line.pop());
 
             try {
-                Thread.currentThread().sleep(100);
+                this.sleep(50);
             }
             catch(Exception e){
                 e.printStackTrace();
@@ -120,22 +116,20 @@ public class Office implements Runnable {
     }
 
     public void run(){
-        while(true){
-            if(!show.getStatus()){
-                if(clients > 0){
-                    processTicket();
-                    clients -= 1;
+        while(true) {
+            synchronized (show) {
+                if (!show.getStatus()) {
+                    if (clients > 0) {
+                        processTicket();
+                        clients -= 1;
+                    } else break;
+                } else {
+                    printSoldOut();
+                    break;
                 }
-                else break;
-            }
-            else{
-                if(DEBUG){
-                    System.out.println(name + "Debug: sold");
-                }
-                printSoldOut();
-                break;
             }
         }
-        System.out.println(Thread.currentThread().getName() + " end");
+        if(DEBUG)
+            System.out.println(Thread.currentThread().getName() + " end");
     }
 }

@@ -41,7 +41,7 @@ public class Theater {
 		@Override
 		public String toString() {
 			// TODO: Implement this method to return the full Seat location ex: A1
-			ArrayList<Character> seat = new ArrayList<Character>();
+			ArrayList<Character> seat = new ArrayList<>();
 			int temp = rowNum;
 
 			while (temp > 0) {
