@@ -1,5 +1,9 @@
 package assignment6;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.stream.Collectors;
+
 /**
  * Seat Class
  * Created by Liuxx on 2017/7/24.
@@ -57,19 +61,33 @@ public class Seat implements Comparable<Seat> {
 
     @Override
     public String toString() {
-        String ret = "";
+        ArrayList<Character> row = new ArrayList<>();
+        int temp = rowNum;
 
-        char[] alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
-        String row = "";
-        int index = rowNum / 26;
+        while (temp > 0) {
+            if (temp < 26) // just one Character
+            {
+                char tempChar = (char) (temp + 64);
+                row.add(tempChar); //add the letter
+                temp = 0;
+            } else { // larger than one Character
+                int quotient = temp / 26; // the part needs to be determined again
+                int rem = temp % 26; //last letter
 
-        row = String.valueOf(alphabet[rowNum % 26]);
+                if (rem == 0) {
+                    temp = quotient - 1;
+                    row.add('Z'); //last letter is 'Z'
+                } else {
+                    temp = quotient;
+                    char tempChar = (char) (rem + 64);
+                    row.add(tempChar);
+                }
 
-        while(index >= 0) {
-            row = String.valueOf(alphabet[rowNum]) + row;
-            index -= 26;
+            }
         }
 
-        return row;
+        Collections.reverse(row);
+        String result = row.stream().map(Object::toString).collect(Collectors.joining("")); //convert to string
+        return result + seatNum;
     }
 }

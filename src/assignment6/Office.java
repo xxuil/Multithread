@@ -22,7 +22,7 @@ public class Office implements Runnable {
 
     private static boolean DEBUG;
     private static int totalTicket = 0;
-    private static int totalClints = 0;
+    private static int totalClients = 0;
     private static Deque<Integer> line = new ArrayDeque<>();
 
     public Office(int clients, String name){
@@ -32,7 +32,7 @@ public class Office implements Runnable {
         totalNum += 1;
         lock = new ReentrantLock();
         officeCondition = lock.newCondition();
-        totalClints += clients;
+        totalClients += clients;
 
         if(DEBUG){
             System.out.println(name + " " + totalNum);
@@ -60,21 +60,33 @@ public class Office implements Runnable {
     public static void setDEBUG(boolean debug){ DEBUG = debug;}
 
     public static void buildLine(){
-        for(int i = 1; i <= totalClints; i++){
+        for(int i = 1; i <= totalClients; i++){
             line.push(i);
         }
     }
 
-    private void processTicket(Seat next){
+    private void processTicket(){
         try{
             lock.lock();
+            Seat next = show.bestAvailableSeat();
+
+            if(next == null)
+                return;
 
             //Client Number is temporary
             show.printTicket(name, next, line.pop());
 
+            try {
+                Thread.currentThread().sleep(100);
+            }
+            catch(Exception e){
+                e.printStackTrace();
+            }
+
             if(DEBUG){
                 totalTicket ++;
                 System.out.println(totalTicket);
+                System.out.println(name + " " + clients);
             }
         }
         finally{
@@ -82,16 +94,48 @@ public class Office implements Runnable {
         }
     }
 
+    private static boolean soldOutMessagePrinted = false;
+
+    private void printSoldOut(){
+        try {
+            lock.lock();
+            if (!soldOutMessagePrinted) {
+                soldOutMessagePrinted = true;
+                System.out.println("Sorry, we are sold out!");
+            }
+        }
+        finally {
+            lock.unlock();
+        }
+
+    }
+
+    public static void reset(){
+        soldOutMessagePrinted = true;
+        show = null;
+        totalNum = 0;
+        totalTicket = 0;
+        totalClients = 0;
+        line = new ArrayDeque<>();
+    }
+
     public void run(){
         while(true){
             if(!show.getStatus()){
-                Seat next = show.bestAvailableSeat();
-
-                if(next == null)
-                    break;
-
-                processTicket(next);
+                if(clients > 0){
+                    processTicket();
+                    clients -= 1;
+                }
+                else break;
+            }
+            else{
+                if(DEBUG){
+                    System.out.println(name + "Debug: sold");
+                }
+                printSoldOut();
+                break;
             }
         }
+        System.out.println(Thread.currentThread().getName() + " end");
     }
 }
